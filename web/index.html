@@ -1,31 +1,82 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>WatchChain</title>
-  <link rel="icon" href="icon.png">
-  <!-- TonConnect UI -->
+  <meta charset="UTF-8" />
+  <title>WatchChain — Echo</title>
+  <link rel="icon" href="icon.png" />
+  <!-- Загружаем TonConnectUI как UMD-бандл -->
   <script src="https://unpkg.com/@tonconnect/ui/dist/tonconnect-ui.min.js"></script>
-  <!-- Наш скрипт -->
-  <script defer src="index.js"></script>
   <style>
-    body { background: #111; color: #eee; font-family: sans-serif; text-align: center; padding: 2rem; }
+    body { background: #111; color: #eee; font-family: Arial, sans-serif; text-align: center; padding: 2rem; }
+    #ton-connect-button { margin: 1rem auto; }
     #app { display: none; margin-top: 1rem; }
-    textarea { width: 100%; max-width: 600px; height: 100px; padding: .5rem; background: #222; color: #eee; border: none; border-radius: 4px; }
-    button { padding: .5rem 1rem; margin-top: .5rem; background: #0f0; color: #000; border: none; border-radius: 4px; cursor: pointer; }
-    #status { margin-top: .5rem; min-height: 1.2em; }
+    textarea { width: 90%; height: 6rem; padding: 0.5rem; background: #222; color: #eee; border: none; border-radius: 4px; }
+    button { padding: 0.5rem 1rem; margin-top: 0.5rem; background: #00ffc8; color: #000; border: none; border-radius: 4px; cursor: pointer; }
+    #status { margin-top: 0.75rem; min-height: 1.2rem; }
   </style>
 </head>
 <body>
-  <h1>WatchChain</h1>
-  <!-- TonConnect рендерит сюда кнопку -->
-  <div id="connect"></div>
-  <!-- После подключения -->
+  <h1>WatchChain — Echo</h1>
+
+  <!-- Здесь появится кнопка подключения кошелька -->
+  <div id="ton-connect-button"></div>
+
   <div id="app">
-    <textarea id="message" placeholder="Введите сообщение…"></textarea><br>
+    <textarea id="message" placeholder="Введите текст…"></textarea><br />
     <button id="send">📤 Отправить 0.001 TON</button>
     <div id="status"></div>
   </div>
+
+  <script>
+    // Адрес вашего задеплоенного EchoContract
+    const CONTRACT_ADDRESS = 'EQBvL1b1vvi-yXP_leOiX3tsOBawWItXOf9FmB0xCl6chsx5';
+
+    // Инициализируем TonConnectUI
+    const tonConnectUI = new TonConnectUI({
+      manifestUrl: window.location.origin + '/tonconnect-manifest.json'
+    });
+
+    // Показать форму только когда кошелек подключен
+    tonConnectUI.onStatusChange(wallet => {
+      document.getElementById('app').style.display = wallet ? 'block' : 'none';
+    });
+
+    document.getElementById('send').onclick = async () => {
+      const statusEl = document.getElementById('status');
+      statusEl.textContent = '';
+
+      try {
+        // Если ещё не подключено — открываем мост
+        if (!tonConnectUI.wallet) {
+          await tonConnectUI.connect();
+        }
+
+        const text = document.getElementById('message').value.trim();
+        if (!text) {
+          statusEl.textContent = '❗ Введите текст сообщения';
+          return;
+        }
+
+        // Кодируем текст в base64
+        const bytes = new TextEncoder().encode(text);
+        const payloadBase64 = btoa(String.fromCharCode(...bytes));
+
+        // Отправляем транзакцию (кошелек сам рассчитает комиссию)
+        await tonConnectUI.sendTransaction({
+          validUntil: Math.floor(Date.now() / 1000) + 600,
+          messages: [{
+            address: CONTRACT_ADDRESS,
+            amount: '1000000',       // 0.001 TON
+            payloadBase64
+          }]
+        });
+
+        statusEl.textContent = '✅ Сообщение отправлено!';
+      } catch (e) {
+        console.error(e);
+        statusEl.textContent = '❌ ' + (e.message || e);
+      }
+    };
+  </script>
 </body>
 </html>
