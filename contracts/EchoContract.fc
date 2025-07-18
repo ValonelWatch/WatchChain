@@ -1,0 +1,5 @@
+;; EchoContract — записывает входящее сообщение в блокчейн
+int main(slice in_msg_body) {
+    ;; Просто возвращаем входящее сообщение
+    return in_msg_body;
+}
