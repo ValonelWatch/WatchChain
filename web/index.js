@@ -1,45 +1,36 @@
-import { TonConnectUI } from '@tonconnect/ui';
+import { TonConnect } from '@tonconnect/sdk';
 
-const connector = new TonConnectUI({
-    manifestUrl: 'https://watchchainmvp.netlify.app/tonconnect-manifest.json',
-    buttonRootId: 'connect',
-});
+const tonConnect = new TonConnect({ /* meta, manifest... */ });
+let sender;
+
+document.getElementById('connect').onclick = async () => {
+  await tonConnect.connect();
+  sender = tonConnect.account;
+  // показать в UI
+};
 
 document.getElementById('send').onclick = async () => {
-    const message = document.getElementById('message').value;
-    const status = document.getElementById('status');
+  if (!sender) return alert('Не подключён кошелёк');
+  const text = document.getElementById('message').value.trim();
+  if (!text) return alert('Введите сообщение');
 
-    if (!message) {
-        status.textContent = 'Введите сообщение перед отправкой!';
-        return;
-    }
-
-    const wallet = connector.wallet;
-    if (!wallet) {
-        status.textContent = 'Сначала подключите кошелёк.';
-        return;
-    }
-
-    const payloadBase64 = btoa(
-        String.fromCharCode(...new TextEncoder().encode(message))
-    );
-
-    const transaction = {
-        validUntil: Math.floor(Date.now() / 1000) + 60,
-        messages: [
-            {
-                address: 'EQBvL1b1vvi-yXP_leOiX3tsOBawWItXOf9FmB0xCl6chsx5', // Адрес контракта EchoContract
-                amount: '50000000',
-                payload: payloadBase64,
-            },
-        ],
-    };
-
-    try {
-        await connector.sendTransaction(transaction);
-        status.textContent = '✅ Сообщение отправлено в блокчейн!';
-    } catch (err) {
-        console.error(err);
-        status.textContent = '❌ Ошибка при отправке: ' + err.message;
-    }
+  const payload = Buffer.from(text, 'utf8').toString('base64');
+  const msg = {
+    address: CONTRACT_ADDRESS,
+    amount: '1000000', // 0.001 TON
+    payload: payload,
+  };
+  try {
+    const result = await tonConnect.sendTransaction({
+      messages: [msg],
+      valid_until: Date.now() + 60000,
+      from: sender.account,
+      // network: -239 (mainnet) or -3 (testnet)
+      network: -3,
+    });
+    console.log('tx:', result);
+  } catch (e) {
+    console.error(e);
+    alert('Ошибка при отправке: ' + e.message);
+  }
 };
