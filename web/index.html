@@ -1,15 +1,53 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>WatchChain</title>
-    <script type="module" src="index.js"></script>
+  <meta charset="UTF-8">
+  <title>WatchChain — Echo</title>
+  <script type="module" src="index.js"></script>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      color: #eee;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+    }
+    textarea {
+      width: 80%;
+      height: 120px;
+      padding: 10px;
+      font-size: 16px;
+      background: #1a1a1a;
+      color: white;
+      border: 1px solid #444;
+      border-radius: 8px;
+    }
+    button {
+      background-color: #00bfa5;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      margin-top: 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 6px;
+    }
+    #status {
+      margin-top: 20px;
+      color: #ccc;
+    }
+  </style>
 </head>
 <body>
-    <h1>WatchChain</h1>
-    <div id="connect"></div>
-    <textarea id="message" placeholder="Введите сообщение..."></textarea>
-    <button id="send">📤 Отправить</button>
-    <p id="status"></p>
+  <h1>WatchChain — Echo</h1>
+  <div id="connect-section">
+    <button id="connect-button">🔗 Привязать кошелёк</button>
+  </div>
+  <div id="wallet-address"></div>
+
+  <textarea id="message" placeholder="Напишите, что произошло..."></textarea>
+  <br>
+  <button id="send-button">📤 Отправить 0.001 TON</button>
+  <p id="status"></p>
 </body>
 </html>
