@@ -1,8 +1,8 @@
 {
-  "url": "https://mvpp.netlify.app",
+  "url": "https://watchchainmvp.netlify.app",
   "name": "WatchChain",
-  "iconUrl": "https://mvpp.netlify.app/icon.png",
-  "termsOfUseUrl": "https://mvpp.netlify.app/terms.html",
-  "privacyPolicyUrl": "https://mvpp.netlify.app/privacy.html",
-  "network": "testnet"
+  "iconUrl": "https://watchchainmvp.netlify.app/icon.png",
+  "termsOfUseUrl": "https://watchchainmvp.netlify.app/terms",
+  "privacyPolicyUrl": "https://watchchainmvp.netlify.app/privacy",
+  "network": "-3"
 }
