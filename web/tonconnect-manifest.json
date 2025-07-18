@@ -1,9 +1,6 @@
 {
   "name": "WatchChain",
-  "description": "Фиксация важных событий в блокчейне TON",
+  "url": "https://watchchainmvp.netlify.app",
   "iconUrl": "https://watchchainmvp.netlify.app/icon.png",
-  "defaultBridgeUrl": "https://bridge.tonapi.io",
-  "author": "WatchChain Team",
-  "version": "1.0.0",
-  "manifest_version": "2"
+  "network": "testnet"
 }
