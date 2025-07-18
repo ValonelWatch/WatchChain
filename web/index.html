@@ -1,16 +1,31 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>WatchChain — Свидетель в блокчейне</title>
-    <script type="module" src="./index.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>WatchChain</title>
+  <link rel="icon" href="icon.png">
+  <!-- TonConnect UI -->
+  <script src="https://unpkg.com/@tonconnect/ui/dist/tonconnect-ui.min.js"></script>
+  <!-- Наш скрипт -->
+  <script defer src="index.js"></script>
+  <style>
+    body { background: #111; color: #eee; font-family: sans-serif; text-align: center; padding: 2rem; }
+    #app { display: none; margin-top: 1rem; }
+    textarea { width: 100%; max-width: 600px; height: 100px; padding: .5rem; background: #222; color: #eee; border: none; border-radius: 4px; }
+    button { padding: .5rem 1rem; margin-top: .5rem; background: #0f0; color: #000; border: none; border-radius: 4px; cursor: pointer; }
+    #status { margin-top: .5rem; min-height: 1.2em; }
+  </style>
 </head>
 <body>
-    <h1>WatchChain</h1>
-    <div id="connect"></div>
-    <textarea id="message" placeholder="Введите сообщение..." rows="5" cols="50"></textarea>
-    <br/>
-    <button id="send">📤 Отправить</button>
-    <p id="status"></p>
+  <h1>WatchChain</h1>
+  <!-- TonConnect рендерит сюда кнопку -->
+  <div id="connect"></div>
+  <!-- После подключения -->
+  <div id="app">
+    <textarea id="message" placeholder="Введите сообщение…"></textarea><br>
+    <button id="send">📤 Отправить 0.001 TON</button>
+    <div id="status"></div>
+  </div>
 </body>
 </html>
