@@ -1,17 +1,28 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <title>WatchChain</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WatchChain — Свидетель в блокчейне</title>
+    <script type="module" src="index.js"></script>
 </head>
-<body>
-    <h1>WatchChain</h1>
-    <div id="connect"></div>
-    <textarea id="message" placeholder="Введите сообщение..."></textarea>
-    <button id="send">📤 Отправить</button>
-    <p id="status"></p>
+<body style="font-family: sans-serif; text-align: center; padding: 2em;">
 
-    <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
-    <script type="module" src="./index.js"></script>
+    <h1>WatchChain</h1>
+    <p>Здесь вы можете зафиксировать событие навсегда в блокчейне TON.</p>
+
+    <!-- Кнопка подключения TON-кошелька -->
+    <div id="connect" style="margin: 1em auto;"></div>
+
+    <!-- Поле ввода сообщения -->
+    <textarea id="message" placeholder="Например: «На улице избивают человека»"
+              rows="5" cols="50" style="margin-top: 1em;"></textarea><br>
+
+    <!-- Кнопка отправки -->
+    <button id="send" style="margin-top: 1em; padding: 0.5em 2em;">📤 Отправить</button>
+
+    <!-- Статус -->
+    <p id="status" style="margin-top: 1em; font-weight: bold;"></p>
+
 </body>
 </html>
