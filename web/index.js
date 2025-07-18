@@ -1,17 +1,19 @@
-import { TonConnectUI } from 'https://unpkg.com/@tonconnect/ui/dist/tonconnect-ui.esm.js';
+// Импортируем ESM-модуль с jsDelivr (CORS-заголовки есть)
+import { TonConnectUI } from 'https://cdn.jsdelivr.net/npm/@tonconnect/ui/dist/tonconnect-ui.esm.js';
 
 const CONTRACT_ADDRESS = 'EQBvL1b1vvi-yXP_leOiX3tsOBawWItXOf9FmB0xCl6chsx5';
 const manifestUrl = `${window.location.origin}/tonconnect-manifest.json`;
 
-const tonConnectUI = new TonConnectUI({
+const ui = new TonConnectUI({
   manifestUrl,
-  network: 'testnet',
+  network: 'testnet'
 });
 
-const btnRoot = document.getElementById('ton-connect-button');
-tonConnectUI.renderButton({ element: btnRoot });
+// Рендерим кнопку
+ui.renderButton({ element: document.getElementById('ton-connect-button') });
 
-tonConnectUI.onStatusChange((wallet) => {
+// Показываем форму только после подключения
+ui.onStatusChange(wallet => {
   document.getElementById('app').style.display = wallet ? 'block' : 'none';
 });
 
@@ -19,28 +21,30 @@ document.getElementById('send').addEventListener('click', async () => {
   const status = document.getElementById('status');
   status.textContent = '';
   try {
-    if (!tonConnectUI.wallet) {
-      await tonConnectUI.connect(); // откроет bridge / deep link
+    if (!ui.wallet) {
+      await ui.connect();
     }
     const text = document.getElementById('message').value.trim();
-    if (!text) throw new Error('Пустое сообщение');
-    const encoder = new TextEncoder();
-    const bytes = encoder.encode(text);
-    const payloadBase64 = btoa(String.fromCharCode(...bytes));
+    if (!text) throw new Error('Введите текст сообщения');
 
+    // Кодируем текст в base64
+    const bytes = new TextEncoder().encode(text);
+    const b64 = btoa(String.fromCharCode(...bytes));
+
+    // Собираем транзакцию
     const tx = {
       validUntil: Math.floor(Date.now() / 1000) + 600,
       messages: [{
         address: CONTRACT_ADDRESS,
-        amount: '1000000',            // 0.001 TON
-        payloadBase64,
-      }],
+        amount: '1000000', // 0.001 TON
+        payloadBase64: b64
+      }]
     };
 
-    await tonConnectUI.sendTransaction(tx);
+    await ui.sendTransaction(tx);
     status.textContent = '✅ Запрос отправлен! Подтвердите в кошельке.';
-  } catch (e) {
-    console.error(e);
-    status.textContent = '❌ ' + (e.message || e);
+  } catch (err) {
+    console.error(err);
+    status.textContent = '❌ ' + (err.message || err);
   }
 });
