@@ -2,7 +2,7 @@ import { TonConnectUI } from "@tonconnect/ui";
 
 // Инициализация TON Connect
 const tonConnectUI = new TonConnectUI({
-    manifestUrl: 'https://mvpp.netlify.app/tonconnect-manifest.json', // замени на свой при необходимости
+    manifestUrl: 'https://watchchainmvp.netlify.app/tonconnect-manifest.json', // замени на свой при необходимости
     buttonRootId: 'connect'
 });
 
