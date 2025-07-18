@@ -1,46 +1,52 @@
-import { TonConnectUI } from "@tonconnect/ui";
+import { TonConnectUI } from "https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js";
 
-// Инициализация TON Connect
 const tonConnectUI = new TonConnectUI({
-    manifestUrl: 'https://watchchainmvp.netlify.app/tonconnect-manifest.json', // замени на свой при необходимости
+    manifestUrl: window.location.origin + '/tonconnect-manifest.json',
     buttonRootId: 'connect'
 });
 
 document.getElementById('send').onclick = async () => {
-    const message = document.getElementById('message').value.trim();
     const status = document.getElementById('status');
+    const text = document.getElementById('message').value.trim();
 
-    if (!message) {
-        status.innerText = '⚠️ Введите сообщение!';
+    if (!text) {
+        status.textContent = '❗ Введите сообщение';
         return;
     }
 
-    const wallet = tonConnectUI.connectedWallet;
-
-    if (!wallet) {
-        status.innerText = '⚠️ Сначала подключите кошелёк.';
+    const connectedWallet = await tonConnectUI.connectedWallet;
+    if (!connectedWallet) {
+        status.textContent = '❗ Сначала подключите кошелёк';
         return;
     }
 
-    const payloadBase64 = btoa(message); // преобразуем текст в base64
+    const recipient = "EQBvL1b1vvi-yXP_leOiX3tsOBawWItXOf9FmB0xCl6chsx5"; // адрес EchoContract
+    const payload = textToBase64Payload(text);
 
-    const tx = {
+    const transaction = {
         validUntil: Math.floor(Date.now() / 1000) + 60,
-        network: -3, // testnet
         messages: [
             {
-                address: 'EQBvL1b1vvi-yXP_leOiX3tsOBawWItXOf9FmB0xCl6chsx5', // адрес EchoContract
-                amount: '50000000', // 0.05 TON в нанотонах
-                payload: payloadBase64
+                address: recipient,
+                amount: "50000000", // 0.05 TON
+                payload: payload
             }
         ]
     };
 
     try {
-        await tonConnectUI.sendTransaction(tx);
-        status.innerText = '✅ Сообщение отправлено в блокчейн!';
-    } catch (error) {
-        console.error("Ошибка:", error);
-        status.innerText = '❌ Ошибка при отправке.';
+        await tonConnectUI.sendTransaction(transaction);
+        status.textContent = '✅ Сообщение отправлено';
+        document.getElementById('message').value = '';
+    } catch (e) {
+        console.error(e);
+        status.textContent = '❌ Ошибка при отправке';
     }
 };
+
+function textToBase64Payload(text) {
+    const textBytes = new TextEncoder().encode(text);
+    const base64 = btoa(String.fromCharCode(...textBytes));
+    return `base64:${base64}`;
+}
+
